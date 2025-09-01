@@ -25,15 +25,11 @@ Function Get-AzResourceLocation {
     }
 
     Foreach ($ServiceTag in $Cache) {
-        $Found = $false
         Foreach ($Subnet in $ServiceTag.Subnets) {
             If(Test-IpInSubnet -IpAddress $IpAddress -Subnet $Subnet.Subnet -SubnetMask $Subnet.SubnetMask) {
-                Write-Host ($ServiceTag | Select-Object Name, SystemService, ChangeNumber)
-                $Found = $true; break
+                Return ($ServiceTag | Select-Object Name, SystemService, ChangeNumber)
             }
         }
-    
-        If ($Found) { break }
     }
 }
 
