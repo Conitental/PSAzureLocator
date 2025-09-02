@@ -1,5 +1,7 @@
 name: PublishToGallery
 
+on: workflow_dispatch
+
 jobs:
   publish_module:
     runs-on: ubuntu-latest
