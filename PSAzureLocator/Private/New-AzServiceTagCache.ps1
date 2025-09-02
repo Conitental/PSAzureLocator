@@ -1,10 +1,19 @@
 Function New-AzServiceTagCache {
     Param(
-        [String]$Path
+        [String]$Path,
+        [ValidateSet('WeeklyJson', 'AzureNetworkServiceTagApi')]
+        [String]$Source = 'WeeklyJson'
     )
 
-    Write-Progress -Activity "Building service tag cache. This can take a moment." -PercentComplete 0
-    $ServiceTags = (Get-AzNetworkServiceTag -Location 'eastus').Values.Properties | Where-Object { -not [String]::IsNullOrEmpty($_.Region) }
+    If ($Source -eq 'WeeklyJson') {
+        Write-Progress -Activity "Building service tag cache" -Status "Downloading weekly JSON file" -PercentComplete 0
+
+        $JsonData = Get-ServiceTagJson
+        $ServiceTags = (ConvertFrom-Json -InputObject $JsonData).values.properties | Where-Object { -not [String]::IsNullOrEmpty($_.region) }
+    } Else {
+        Write-Progress -Activity "Building service tag cache" -Status "Fetching service tags from API" -PercentComplete 0
+        $ServiceTags = (Get-AzNetworkServiceTag -Location 'eastus').Values.Properties | Where-Object { -not [String]::IsNullOrEmpty($_.Region) }
+    }
 
     $i = 0
     $Cache = Foreach ($ServiceTag in $ServiceTags) {
@@ -17,7 +26,7 @@ Function New-AzServiceTagCache {
 
         [pscustomobject]@{
             Name = $ServiceTag.Region
-            Service = $ServiceTag.SystemService
+            SystemService = $ServiceTag.SystemService
             ChangeNumber = $ServiceTag.ChangeNumber
             Subnets = Foreach($Prefix in $AddressPrefixes) {
                 $NetworkAddress = $Prefix -replace '/\d+'
@@ -34,7 +43,9 @@ Function New-AzServiceTagCache {
 
     # Save cache to location
     If($Path) {
-        $Cache | ConvertTo-Json -Depth 5 | Out-File $Path -Encoding utf8
+        [pscustomobject]@{
+
+        } | ConvertTo-Json -Depth 10 | Out-File $Path -Encoding utf8
     }
 
     # Make cache usable in module
