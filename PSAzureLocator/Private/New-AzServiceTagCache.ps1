@@ -36,7 +36,7 @@ Function New-AzServiceTagCache {
 
     $i = 0
     $CalculatedRanges = Foreach ($ServiceTag in $ServiceTags) {
-        $Progress = $i * 80 / $ServiceTags.Count
+        $Progress = $i * 100 / $ServiceTags.Count
         $i += 1
         Write-Progress -Activity "Building service tag cache" -Status "$([math]::Round($Progress, 0))% Calculating $($ServiceTag.Region) ranges" -PercentComplete $Progress
 
