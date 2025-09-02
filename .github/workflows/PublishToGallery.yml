@@ -1,6 +1,9 @@
 name: PublishToGallery
 
-on: workflow_dispatch
+on:
+  workflow_dispatch:
+    branches:
+      - release/prod
 
 jobs:
   publish_module:
