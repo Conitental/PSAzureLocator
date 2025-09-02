@@ -1,0 +1,14 @@
+name: PublishToGallery
+
+jobs:
+  publish_module:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Publish to PSGallery
+        uses: aammirmirza/Publish2PSGallery@PSGallery_v2
+        with:
+          NuGetApiKey: ${{ secrets.NuGetApiKey }}
+          modulePath: ./PSAzureLocator/PSAzureLocator.psd1
