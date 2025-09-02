@@ -4,7 +4,7 @@ Function Get-AzResourceLocation {
         [String]$DnsName
     )
 
-    $IpAddress = [System.Net.Dns]::GetHostAddresses($DnsName).IPAddressToString
+    $IpAddresses = [System.Net.Dns]::GetHostAddresses($DnsName).IPAddressToString
 
     $Cache = Get-Variable -Scope Script -Name ServiceTagCache -ValueOnly -ErrorAction SilentlyContinue
 
@@ -24,15 +24,17 @@ Function Get-AzResourceLocation {
         Write-Verbose "Use session cache"
     }
 
-    Foreach ($ServiceTag in $Cache) {
-        Foreach ($Subnet in $ServiceTag.Subnets) {
-            If(Test-IpInSubnet -IpAddress $IpAddress -Subnet $Subnet.Subnet -SubnetMask $Subnet.SubnetMask) {
-                [pscustomobject]@{
-                    IpAddress     = $IpAddress
-                    Region        = $ServiceTag.Name
-                    SystemService = $ServiceTag.SystemService
-                    ChangeNumber  = $ServiceTag.ChangeNumber
-                    CidrBlock     = $Subnet.Subnet + '/' + $Subnet.Cidr
+    Foreach($IPAddress in $IpAddresses) {
+        Foreach ($ServiceTag in $Cache) {
+            Foreach ($Subnet in $ServiceTag.Subnets) {
+                If(Test-IpInSubnet -IpAddress $IpAddress -Subnet $Subnet.Subnet -SubnetMask $Subnet.SubnetMask) {
+                    [pscustomobject]@{
+                        IpAddress     = $IpAddress
+                        Region        = $ServiceTag.Name
+                        SystemService = $ServiceTag.SystemService
+                        ChangeNumber  = $ServiceTag.ChangeNumber
+                        CidrBlock     = $Subnet.Subnet + '/' + $Subnet.Cidr
+                    }
                 }
             }
         }
