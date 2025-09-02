@@ -15,4 +15,4 @@ jobs:
       - name: Publish to PSGallery
       - run: |
          Publish-Module -Path ./PSAzureLocator -NuGetApiKey ${{ secrets.NuGetApiKey }}
-      shell: pwsh
+        shell: pwsh
