@@ -1,23 +1,33 @@
 Function Get-AzResourceLocation {
-    [CmdletBinding()]
+    [CmdletBinding(SupportsShouldProcess=$true, ConfirmImpact='Low')]
     Param(
         [Parameter(
             Mandatory,
             ValueFromPipeline
         )]
         [Alias('DnsName', 'IpAddress', 'Host')]
-        [String]$Target
+        [String]$Target,
+        [Switch]$UpdateCache,
+        [Switch]$IgnoreCacheDate
     )
 
     Begin {
-        # $Cache = Get-Variable -Scope Script -Name ServiceTagCache -ValueOnly -ErrorAction SilentlyContinue
+        # Try to load cache from a previous invocation
+        $Cache = Get-Variable -Scope Script -Name ServiceTagCache -ValueOnly -ErrorAction SilentlyContinue
+
+        If ($UpdateCache) {
+            Write-Verbose "$($MyInvocation.MyCommand): -UpdateCache used: Force cache update"
+            $Cache = New-AzServiceTagCache -Path $constant_CacheFile
+        }
     
         If (-not $Cache) {
             Write-Verbose "$($MyInvocation.MyCommand): No cache has been loaded yet. Searching for saved cache."
-    
+            
+            # Check if we have a saved cache
             $Cache = Get-AzServiceTagCache -Path $constant_CacheFile
             Set-Variable -Scope Script -Name ServiceTagCache -Value $Cache
-    
+            
+            # Do we need to create a new cache?
             If (-not $Cache) {
                 Write-Verbose "$($MyInvocation.MyCommand): No saved cache has been found. Creating it now."
                 $Cache = New-AzServiceTagCache -Path $constant_CacheFile
@@ -25,9 +35,19 @@ Function Get-AzResourceLocation {
                 Write-Verbose "$($MyInvocation.MyCommand): Saved cache has been found"
             }
 
-
         } Else {
             Write-Verbose "$($MyInvocation.MyCommand): Session cache will be used."
+        }
+
+        # Check cache age and decide if we fetch a new one
+        If($Cache.Date -lt (Get-Date).AddDays(-7) -and -not $IgnoreCacheDate) {
+            Write-Verbose "$($MyInvocation.MyCommand): Cache is outdated. Date: $($Cache.Date)"
+            # TODO: Take actual age of downloaded data into account
+            If($PSCmdlet.ShouldContinue("Your saved cache file is older than 7 days. Would you like to update it?`nUse -IgnoreCacheDate to prevent this message", "Cache out of date")) {
+                $Cache = New-AzServiceTagCache -Path $constant_CacheFile
+            } Else {
+                Write-Verbose "$($MyInvocation.MyCommand): We will use the existing cache"
+            }
         }
     }
 
