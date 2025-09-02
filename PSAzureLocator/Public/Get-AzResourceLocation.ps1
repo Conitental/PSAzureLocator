@@ -9,19 +9,19 @@ Function Get-AzResourceLocation {
     $Cache = Get-Variable -Scope Script -Name ServiceTagCache -ValueOnly -ErrorAction SilentlyContinue
 
     If (-not $Cache) {
-        Write-Verbose "No cache loaded yet. Try reading from file"
+        Write-Verbose "$($MyInvocation.MyCommand): No cache has been loaded yet. Searching for saved cache."
 
         $Cache = Get-AzServiceTagCache -Path $constant_CacheFile
         Set-Variable -Scope Script -Name ServiceTagCache -Value $Cache
 
         If (-not $Cache) {
-            Write-Verbose "No saved cache found. Creating it now."
+            Write-Verbose "$($MyInvocation.MyCommand): No saved cache has been found. Creating it now."
             $Cache = New-AzServiceTagCache -Path $constant_CacheFile
         } Else {
-            Write-Verbose "Use saved cache"
+            Write-Verbose "$($MyInvocation.MyCommand): Saved cache has been found and loaded."
         }
     } Else {
-        Write-Verbose "Use session cache"
+        Write-Verbose "$($MyInvocation.MyCommand): Session cache will be used."
     }
 
     Foreach($IPAddress in $IpAddresses) {

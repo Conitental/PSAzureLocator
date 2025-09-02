@@ -4,7 +4,7 @@ Function Get-ServiceTagJson {
         [String]$Pattern = 'https://download\.microsoft\.com.*?/ServiceTags_Public_\d+.json'
     )
 
-    Write-Verbose "Parsing content of $DownloadPage using pattern $Pattern"
+    Write-Verbose "$($MyInvocation.MyCommand): Parsing content of $DownloadPage using pattern $Pattern"
     $PageContent = Invoke-WebRequest -Uri $DownloadPage -UseBasicParsing
 
     $Match = [Regex]::Match($PageContent.RawContent, $Pattern)
@@ -14,7 +14,7 @@ Function Get-ServiceTagJson {
         Return $null
     }
 
-    Write-Verbose "Downloading file from $($Match.Value)"
+    Write-Verbose "$($MyInvocation.MyCommand): Downloading file from $($Match.Value)"
     $DataBytes = Invoke-WebRequest -Uri $Match.Value -UseBasicParsing | Select-Object -ExpandProperty Content
 
     Return [System.Text.Encoding]::UTF8.GetString($DataBytes)
