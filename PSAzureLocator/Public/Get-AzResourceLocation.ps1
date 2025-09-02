@@ -74,6 +74,7 @@ Function Get-AzResourceLocation {
                 Foreach ($Subnet in $ServiceTag.Subnets) {
                     If(Test-IpInSubnet -IpAddress $IpAddress -Subnet $Subnet.Subnet -SubnetMask $Subnet.SubnetMask) {
                         [pscustomobject]@{
+                            Target        = $Target
                             IpAddress     = $IpAddress
                             Region        = $ServiceTag.Name
                             SystemService = $ServiceTag.SystemService
