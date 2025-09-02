@@ -1,3 +1,13 @@
+<#
+.SYNOPSIS
+    Converts a given Cidr to its subnet mask
+
+.PARAMETER Cidr
+    The download page to look for the download link.
+
+.EXAMPLE
+    Get-SubnetMask -Cidr 24
+#>
 Function Get-SubnetMask {
     Param(
         [Parameter(Mandatory)]

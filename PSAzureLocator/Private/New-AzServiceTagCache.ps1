@@ -1,3 +1,16 @@
+<#
+.SYNOPSIS
+    Fetches Azure service tags and return it and optionally saves it to a file.
+
+.PARAMETER Path
+    The filepath to load the cache from.
+
+.PARAMETER Source
+    The source of the service tags. They can either be fetched through Graph API or by downloading a weekly Json file from Microsoft (default).
+
+.EXAMPLE
+    New-AzServiceTagCache -Path '~/cache.json'
+#>
 Function New-AzServiceTagCache {
     Param(
         [String]$Path,

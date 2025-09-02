@@ -1,3 +1,25 @@
+<#
+.SYNOPSIS
+    Finds the Azure region of a given resource.
+
+.DESCRIPTION
+    Resolves a target to get its ip address and finds matching subnets from Azure network service tags.
+
+.PARAMETER Target
+    The target DnsName or IpAddress of the resource.
+
+.PARAMETER UpdateCache
+    Choose to update the existing service tag cache.
+
+.PARAMETER IgnoreCacheDate
+    Don't prompt for a cache update if it is older than 7 days.
+
+.PARAMETER ServiceTagSource
+    The source of the service tags. They can either be fetched through Graph API or by downloading a weekly Json file from Microsoft (default).
+
+.EXAMPLE
+    Get-AzResourceLocation -Target 'resource.contoso.com'
+#>
 Function Get-AzResourceLocation {
     [CmdletBinding(SupportsShouldProcess=$true, ConfirmImpact='Low')]
     Param(

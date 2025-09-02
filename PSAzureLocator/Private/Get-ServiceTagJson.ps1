@@ -1,3 +1,19 @@
+<#
+.SYNOPSIS
+    Downloads the weekl service tag json from Microsoft.
+
+.DESCRIPTION
+    This function parses the download page for the weekly json file for the correct download link and returns the file content.
+
+.PARAMETER DownloadPage
+    The download page to look for the download link.
+
+.PARAMETER Pattern
+    The pattern to match the download link in the page.
+
+.EXAMPLE
+    Get-ServiceTagJson
+#>
 Function Get-ServiceTagJson {
     Param(
         [String]$DownloadPage = 'https://www.microsoft.com/en-us/download/details.aspx?id=56519',
