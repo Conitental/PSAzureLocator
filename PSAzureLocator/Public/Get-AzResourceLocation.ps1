@@ -41,6 +41,10 @@ Function Get-AzResourceLocation {
         If ($UpdateCache) {
             Write-Verbose "$($MyInvocation.MyCommand): -UpdateCache used: Force cache update"
             $Cache = New-AzServiceTagCache -Path $constant_CacheFile -Source $ServiceTagSource
+            If (-not $Cache) {
+                Write-Error "$($MyInvocation.MyCommand): Error during cache creation"
+                Return
+            }
         }
     
         If (-not $Cache) {
@@ -54,6 +58,10 @@ Function Get-AzResourceLocation {
             If (-not $Cache) {
                 Write-Verbose "$($MyInvocation.MyCommand): No saved cache has been found. Creating it now."
                 $Cache = New-AzServiceTagCache -Path $constant_CacheFile -Source $ServiceTagSource
+                If (-not $Cache) {
+                    Write-Error "$($MyInvocation.MyCommand): Error during cache creation"
+                    Return
+                }
             } Else {
                 Write-Verbose "$($MyInvocation.MyCommand): Saved cache has been found"
             }
@@ -68,6 +76,10 @@ Function Get-AzResourceLocation {
             # TODO: Take actual age of downloaded data into account
             If($PSCmdlet.ShouldContinue("Your saved cache file is older than 7 days. Would you like to update it?`nUse -IgnoreCacheDate to prevent this message", "Cache out of date")) {
                 $Cache = New-AzServiceTagCache -Path $constant_CacheFile -Source $ServiceTagSource
+                If (-not $Cache) {
+                    Write-Error "$($MyInvocation.MyCommand): Error during cache creation"
+                    Return
+                }
             } Else {
                 Write-Verbose "$($MyInvocation.MyCommand): We will use the existing cache"
             }
