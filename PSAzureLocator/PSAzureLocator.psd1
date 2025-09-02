@@ -23,7 +23,7 @@
   )
 
   FunctionsToExport = @(
-    'Get-AzResourceLocaton'
+    'Get-AzResourceLocation'
   )
 
 }
