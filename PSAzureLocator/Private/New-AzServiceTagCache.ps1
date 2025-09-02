@@ -1,8 +1,7 @@
 Function New-AzServiceTagCache {
     Param(
         [String]$Path,
-        [ValidateSet('WeeklyJson', 'AzureNetworkServiceTagApi')]
-        [String]$Source = 'WeeklyJson'
+        [ServiceTagSource]$Source = [ServiceTagSource]::WeeklyJson
     )
 
     If ($Source -eq 'WeeklyJson') {

@@ -8,7 +8,8 @@ Function Get-AzResourceLocation {
         [Alias('DnsName', 'IpAddress', 'Host')]
         [String]$Target,
         [Switch]$UpdateCache,
-        [Switch]$IgnoreCacheDate
+        [Switch]$IgnoreCacheDate,
+        [ServiceTagSource]$ServiceTagSource = [ServiceTagSource]::WeeklyJson
     )
 
     Begin {
@@ -17,7 +18,7 @@ Function Get-AzResourceLocation {
 
         If ($UpdateCache) {
             Write-Verbose "$($MyInvocation.MyCommand): -UpdateCache used: Force cache update"
-            $Cache = New-AzServiceTagCache -Path $constant_CacheFile
+            $Cache = New-AzServiceTagCache -Path $constant_CacheFile -Source $ServiceTagSource
         }
     
         If (-not $Cache) {
@@ -30,7 +31,7 @@ Function Get-AzResourceLocation {
             # Do we need to create a new cache?
             If (-not $Cache) {
                 Write-Verbose "$($MyInvocation.MyCommand): No saved cache has been found. Creating it now."
-                $Cache = New-AzServiceTagCache -Path $constant_CacheFile
+                $Cache = New-AzServiceTagCache -Path $constant_CacheFile -Source $ServiceTagSource
             } Else {
                 Write-Verbose "$($MyInvocation.MyCommand): Saved cache has been found"
             }
@@ -44,7 +45,7 @@ Function Get-AzResourceLocation {
             Write-Verbose "$($MyInvocation.MyCommand): Cache is outdated. Date: $($Cache.Date)"
             # TODO: Take actual age of downloaded data into account
             If($PSCmdlet.ShouldContinue("Your saved cache file is older than 7 days. Would you like to update it?`nUse -IgnoreCacheDate to prevent this message", "Cache out of date")) {
-                $Cache = New-AzServiceTagCache -Path $constant_CacheFile
+                $Cache = New-AzServiceTagCache -Path $constant_CacheFile -Source $ServiceTagSource
             } Else {
                 Write-Verbose "$($MyInvocation.MyCommand): We will use the existing cache"
             }
@@ -65,6 +66,7 @@ Function Get-AzResourceLocation {
         }
         
         # We are treating the target address as collection multiple dns records could have been returned
+        # TODO: Think of a better way to find matches than three loops
         Foreach($IpAddress in $IpAddresses) {
             Write-Verbose "$($MyInvocation.MyCommand): Find subnet for address: $IpAddress"
 
