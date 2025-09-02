@@ -14,5 +14,7 @@ jobs:
 
       - name: Publish to PSGallery
         run: |
+         Install-Module -Name Az.Accounts -Force
+         Install-Module -Name Az.Network -Force
          Publish-Module -Path ./PSAzureLocator -NuGetApiKey ${{ secrets.NuGetApiKey }}
         shell: pwsh
