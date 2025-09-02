@@ -3,7 +3,7 @@ name: PublishToGallery
 on:
   workflow_dispatch:
     branches:
-      - release/prod
+      - release/*
 
 jobs:
   publish_module:
@@ -16,4 +16,4 @@ jobs:
         uses: aammirmirza/Publish2PSGallery@PSGallery_v2
         with:
           NuGetApiKey: ${{ secrets.NuGetApiKey }}
-          modulePath: ./PSAzureLocator/PSAzureLocator.psd1
+          modulePath: ../PSAzureLocator/PSAzureLocator.psd1
