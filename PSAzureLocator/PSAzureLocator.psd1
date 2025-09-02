@@ -3,7 +3,7 @@
 @{
 
   RootModule = 'PSAzureLocator.psm1'
-  ModuleVersion = '1.0.0'
+  ModuleVersion = '1.0.1'
   GUID = 'c051482a-094e-4b8b-b0c3-26c508e02adb'
   Author = 'Conitental'
   Description = 'Module to locate a given Azure resource region based on its dns name or ip address'
