@@ -14,6 +14,13 @@
     }
   }
 
+  RequiredModules = @(
+    @(
+        'Az.Accounts',
+        'Az.Network'
+    )
+  )
+
   FunctionsToExport = @(
     'Get-AzResourceLocaton'
   )

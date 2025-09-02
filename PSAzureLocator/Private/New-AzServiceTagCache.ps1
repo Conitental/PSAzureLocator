@@ -15,6 +15,10 @@ Function New-AzServiceTagCache {
         Write-Progress -Activity "Building service tag cache" -Status "Fetching service tags from API" -PercentComplete 0
         Write-Verbose "$($MyInvocation.MyCommand): Fetching cache using service tag API"
 
+        If (-not (Get-AzContext).Subscription.Id) {
+            Write-Error "$($MyInvocation.MyCommand): You are trying to fetch service tags from the API but no AzContext with SubscriptionId could be found. Make sure to run Connect-AzAccount with an account that has permissions on a subscription."
+            Return $null
+        }
         $ServiceTags = (Get-AzNetworkServiceTag -Location 'eastus').Values.Properties | Where-Object { -not [String]::IsNullOrEmpty($_.Region) }
     }
 
