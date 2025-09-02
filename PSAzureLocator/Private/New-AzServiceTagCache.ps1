@@ -22,7 +22,7 @@ Function New-AzServiceTagCache {
     $CalculatedRanges = Foreach ($ServiceTag in $ServiceTags) {
         $Progress = $i * 80 / $ServiceTags.Count
         $i += 1
-        Write-Progress -Activity "Building service tag cache. This can take a moment." -Status "$([math]::Round($Progress, 0))% Calculating $($ServiceTag.Region) ranges" -PercentComplete $Progress
+        Write-Progress -Activity "Building service tag cache" -Status "$([math]::Round($Progress, 0))% Calculating $($ServiceTag.Region) ranges" -PercentComplete $Progress
 
         # TODO: Remove the regex and support IPv6
         $AddressPrefixes = $ServiceTag.AddressPrefixes | Where-Object { $_ -match '(\d+\.){3}\d+/\d+' }
